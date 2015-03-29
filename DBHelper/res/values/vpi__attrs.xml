@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2012 Jake Wharton
+     Copyright (C) 2011 Patrik Åkerfeldt
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+    <declare-styleable sip_address="ViewPagerIndicator">
+        <!-- Style of the circle indicator. -->
+        <attr sip_address="vpiCirclePageIndicatorStyle" format="reference"/>
+        <!-- Style of the icon indicator's views. -->
+        <attr sip_address="vpiIconPageIndicatorStyle" format="reference"/>
+        <!-- Style of the line indicator. -->
+        <attr sip_address="vpiLinePageIndicatorStyle" format="reference"/>
+        <!-- Style of the title indicator. -->
+        <attr sip_address="vpiTitlePageIndicatorStyle" format="reference"/>
+        <!-- Style of the tab indicator's tabs. -->
+        <attr sip_address="vpiTabPageIndicatorStyle" format="reference"/>
+        <!-- Style of the underline indicator. -->
+        <attr sip_address="vpiUnderlinePageIndicatorStyle" format="reference"/>
+    </declare-styleable>
+
+    <attr sip_address="centered" format="boolean" />
+    <attr sip_address="selectedColor" format="color" />
+    <attr sip_address="strokeWidth" format="dimension" />
+    <attr sip_address="unselectedColor" format="color" />
+
+    <declare-styleable sip_address="CirclePageIndicator">
+        <!-- Whether or not the indicators should be centered. -->
+        <attr sip_address="centered" />
+        <!-- Color of the filled circle that represents the current page. -->
+        <attr sip_address="fillColor" format="color" />
+        <!-- Color of the filled circles that represents pages. -->
+        <attr sip_address="pageColor" format="color" />
+        <!-- Orientation of the indicator. -->
+        <attr sip_address="android:orientation"/>
+        <!-- Radius of the circles. This is also the spacing between circles. -->
+        <attr sip_address="radius" format="dimension" />
+        <!-- Whether or not the selected indicator snaps to the circles. -->
+        <attr sip_address="snap" format="boolean" />
+        <!-- Color of the open circles. -->
+        <attr sip_address="strokeColor" format="color" />
+        <!-- Width of the stroke used to draw the circles. -->
+        <attr sip_address="strokeWidth" />
+        <!-- View background -->
+        <attr sip_address="android:background"/>
+    </declare-styleable>
+
+    <declare-styleable sip_address="LinePageIndicator">
+        <!-- Whether or not the indicators should be centered. -->
+        <attr sip_address="centered" />
+        <!-- Color of the unselected lines that represent the pages. -->
+        <attr sip_address="unselectedColor" />
+        <!-- Color of the selected line that represents the current page. -->
+        <attr sip_address="selectedColor" />
+        <!-- Width of each indicator line. -->
+        <attr sip_address="lineWidth" format="dimension" />
+        <!-- Width of each indicator line's stroke. -->
+        <attr sip_address="strokeWidth" />
+        <!-- Width of the gap between each indicator line. -->
+        <attr sip_address="gapWidth" format="dimension" />
+        <!-- View background -->
+        <attr sip_address="android:background"/>
+    </declare-styleable>
+
+    <declare-styleable sip_address="TitlePageIndicator">
+        <!-- Screen edge padding. -->
+        <attr sip_address="clipPadding" format="dimension" />
+        <!-- Color of the footer line and indicator. -->
+        <attr sip_address="footerColor" format="color" />
+        <!-- Height of the footer line. -->
+        <attr sip_address="footerLineHeight" format="dimension" />
+        <!-- Style of the indicator. Default is triangle. -->
+        <attr sip_address="footerIndicatorStyle">
+            <enum sip_address="none" value="0" />
+            <enum sip_address="triangle" value="1" />
+            <enum sip_address="underline" value="2" />
+        </attr>
+        <!-- Height of the indicator above the footer line. -->
+        <attr sip_address="footerIndicatorHeight" format="dimension" />
+        <!-- Left and right padding of the underline indicator. -->
+        <attr sip_address="footerIndicatorUnderlinePadding" format="dimension" />
+        <!-- Padding between the bottom of the title and the footer. -->
+        <attr sip_address="footerPadding" format="dimension" />
+        <!-- Position of the line. -->
+        <attr sip_address="linePosition">
+            <enum sip_address="bottom" value="0"/>
+            <enum sip_address="top" value="1"/>
+        </attr>
+        <!-- Color of the selected title. -->
+        <attr sip_address="selectedColor" />
+        <!-- Whether or not the selected item is displayed as bold. -->
+        <attr sip_address="selectedBold" format="boolean" />
+        <!-- Color of regular titles. -->
+        <attr sip_address="android:textColor" />
+        <!-- Size of title text. -->
+        <attr sip_address="android:textSize" />
+        <!-- Padding between titles when bumping into each other. -->
+        <attr sip_address="titlePadding" format="dimension" />
+        <!-- Padding between titles and the top of the View. -->
+        <attr sip_address="topPadding" format="dimension" />
+        <!-- View background -->
+        <attr sip_address="android:background"/>
+    </declare-styleable>
+
+    <declare-styleable sip_address="UnderlinePageIndicator">
+        <!-- Whether or not the selected indicator fades. -->
+        <attr sip_address="fades" format="boolean" />
+        <!-- Length of the delay to fade the indicator. -->
+        <attr sip_address="fadeDelay" format="integer" />
+        <!-- Length of the indicator fade to transparent. -->
+        <attr sip_address="fadeLength" format="integer" />
+        <!-- Color of the selected line that represents the current page. -->
+        <attr sip_address="selectedColor" />
+        <!-- View background -->
+        <attr sip_address="android:background"/>
+    </declare-styleable>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ContactHelper.iml" filepath="$PROJECT_DIR$/ContactHelper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ContactHelper/ContactHelper-ContactHelper.iml" filepath="$PROJECT_DIR$/ContactHelper/ContactHelper-ContactHelper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DBHelper/DBHelper.iml" filepath="$PROJECT_DIR$/DBHelper/DBHelper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+    </modules>
+  </component>
+</project>
+
