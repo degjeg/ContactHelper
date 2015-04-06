@@ -3,6 +3,7 @@ package android.helper.contact.bean;
 import com.witness.utils.db.annotation.DBColumn;
 import com.witness.utils.db.annotation.DBPrimaryKey;
 import com.witness.utils.db.annotation.DBTableName;
+import com.witness.utils.db.annotation.DBTransient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +14,21 @@ import java.util.List;
 
 @DBTableName(name = Contact.Columns.TABLE_NAME_CONTACT)
 public class Contact {
+
+
     @DBPrimaryKey(name = Columns.CONTACT_ID, autoIncrement = true)
     long cid = 0;
 
     @DBColumn(name = Columns.DISPLAY_NAME)
     String displayName;
+
+    @DBColumn(name = Columns.STARED)
+    int stared;
+
+
+    @DBTransient
+    int status = 0;//0:初始化 1:加载中 2:加载完成 3:加载失败
+
 
 
 /*    List<Email> emailList;
@@ -43,6 +54,7 @@ public class Contact {
         public static final String _ID = "id";
         public static final String CONTACT_ID = "cid";
         public static final String DISPLAY_NAME = "name";
+        public static final String STARED = "stared";
 
         public static final String DATA_TYPE = "dt";
         public static final String DATA1 = "d1";
@@ -276,4 +288,11 @@ public class Contact {
     }
 
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 }

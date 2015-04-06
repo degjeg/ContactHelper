@@ -1,14 +1,14 @@
 package test.activitys;
 
 import android.app.Activity;
-import android.database.sqlite.SQLiteDatabase;
 import android.helper.contact.ContactDbHelper;
+import android.helper.contact.ContactHelper;
 import android.helper.contact.bean.Contact;
-import android.helper.contact.bean.Data;
 import android.helper.contact.bean.Email;
 import android.helper.contact.bean.IContactData;
 import android.helper.contact.bean.IM;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -22,11 +22,13 @@ import witness.ho1st.R;
 /**
  * Created by danger on 15/3/29.
  */
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements View.OnClickListener {
 
     private static final String TAG = "MainActivity";
     TextView crateTable;
+    TextView tvSelect;
     ContactDbHelper db;
+    ContactHelper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +37,13 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         crateTable = (TextView) findViewById(R.id.create_table);
+        tvSelect = (TextView) findViewById(R.id.select);
 
         crateTable.setOnClickListener(onClickCreateTable);
+        tvSelect.setOnClickListener(this);
+
         db = new ContactDbHelper(this);
+        helper = new ContactHelper(getBaseContext());
 
         db.createTables();
     }
@@ -107,6 +113,24 @@ public class MainActivity extends Activity {
             }
         }
 
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (tvSelect == v) {
+            long start = System.currentTimeMillis();
+            List<Contact> contacts = helper.querySimple();
+
+            Log.d("", "contact count:" + contacts.size() + ", use:" + (System.currentTimeMillis() - start));
+
+            helper.query(contacts);
+
+            for (Contact contact : contacts) {
+                Log.d("", "contact" + contact.getDisplayName() + ",d:" + contact.getDatas().size());
+            }
+            Log.d("", "contact used:" + (System.currentTimeMillis() - start));
+        }
 
     }
 }
