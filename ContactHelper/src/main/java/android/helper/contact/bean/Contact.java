@@ -25,6 +25,9 @@ public class Contact {
     @DBColumn(name = Columns.STARED)
     int stared;
 
+    @DBTransient
+    long raw_contact_id;
+
 
     @DBTransient
     int status = 0;//0:初始化 1:加载中 2:加载完成 3:加载失败
@@ -45,6 +48,7 @@ public class Contact {
     List<WebSite> webSiteList;*/
 
     List<IContactData> dataList = new ArrayList<IContactData>();
+    List<Long> groupList;
 
     public interface Columns {
         public static final String TABLE_NAME_CONTACT = "contact";
@@ -287,6 +291,21 @@ public class Contact {
         return dataList;
     }
 
+    public void addGroup(Long gid) {
+        if (gid == null || gid == 0) {
+            return;
+        }
+        if (groupList == null) {
+            groupList = new ArrayList<Long>();
+        }
+        if (!groupList.contains(gid)) {
+            groupList.add(gid);
+        }
+    }
+
+    public List<Long> getGroupList() {
+        return groupList;
+    }
 
     public int getStatus() {
         return status;

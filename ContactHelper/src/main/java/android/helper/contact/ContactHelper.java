@@ -1,5 +1,6 @@
 package android.helper.contact;
 
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -9,6 +10,7 @@ import android.helper.contact.bean.Event;
 import android.helper.contact.bean.Group;
 import android.helper.contact.bean.IM;
 import android.helper.contact.bean.NickName;
+import android.helper.contact.bean.Organization;
 import android.helper.contact.bean.Phone;
 import android.helper.contact.bean.Relation;
 import android.helper.contact.bean.SipAddress;
@@ -22,6 +24,7 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Auther:Danger
@@ -33,26 +36,11 @@ public class ContactHelper {
     Context context;
     ContentResolver cr;
 
-    private interface IContactListener {
-        int ERROR_UNKNOWN = 1;
-
-        int onCount(int count);
-
-        void onContact(Contact contact);
-
-        void onError(int reason, Exception exInfo);
-    }
-
-
-    private interface IQueryDataListener {
-        void onData(Cursor c);
-
-    }
+    List<Group> groups;
 
     public ContactHelper(Context context) {
         this.context = context;
         this.cr = context.getContentResolver();
-
     }
 
 
@@ -119,6 +107,55 @@ public class ContactHelper {
         return list;
     }
 
+    public List<Group> queryGroups() {
+        Cursor groupCursor = null;
+
+        try {
+            String selection = ContactsContract.Groups.AUTO_ADD + "=? and "
+                    + ContactsContract.Groups.GROUP_VISIBLE + "=? and "
+                    + ContactsContract.Groups.DELETED + "=? ";
+            String selectionArgs[] = {"0", "0", "0"};
+            groupCursor = cr.query(ContactsContract.Groups.CONTENT_URI,
+                    new String[]{ContactsContract.Groups.TITLE, ContactsContract.Groups._ID},
+                    selection,
+                    selectionArgs,
+                    null);
+            if (groupCursor == null || !groupCursor.moveToFirst()) {
+                return groups;
+            }
+
+         /*   StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < groupCursor.getColumnCount(); i++) {
+                sb.append(groupCursor.getColumnName(i) + "\t");
+            }
+            Log.d(TAG, sb.toString());*/
+
+            if (groups == null) {
+                groups = new ArrayList<Group>();
+            }
+            groups.clear();
+            do {
+                Group group = new Group();
+                group.setGid(groupCursor.getLong(groupCursor.getColumnIndex(ContactsContract.Groups._ID)));
+                group.setGroupName(groupCursor.getString(groupCursor.getColumnIndex(ContactsContract.Groups.TITLE)));
+
+                /*sb = new StringBuilder();
+                for (int i = 0; i < groupCursor.getColumnCount(); i++) {
+                    sb.append(groupCursor.getString(i) + "\t");
+                }
+                Log.d(TAG, sb.toString());*/
+//                Log.d(TAG, "group id " + group.getGid() + "=" + group.getGroupName());
+
+                groups.add(group);
+            } while (groupCursor.moveToNext());
+        } finally {
+            if (groupCursor != null) {
+                groupCursor.close();
+            }
+        }
+
+        return groups;
+    }
 
     public void query(List<Contact> contacts) {
 
@@ -156,6 +193,14 @@ public class ContactHelper {
         Cursor cursor = null;
 
         try {
+            List<Group> groups = (this.groups == null) ? queryGroups() : this.groups;
+            Map<Long, Group> groupMap = new HashMap<Long, Group>();
+            if (groups != null) {
+                for (Group group : groups) {
+                    groupMap.put(group.getGid(), group);
+                }
+            }
+
             cursor = cr.query(ContactsContract.Data.CONTENT_URI, projection, selection, selectionArgs, order);
 
             if (cursor == null || !cursor.moveToFirst()) {
@@ -259,6 +304,28 @@ public class ContactHelper {
                     im.setData(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA)));
                     im.setProtocol(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Im.PROTOCOL)));
                     contact.addData(im);
+                } else if (TextUtils.equals(mineType, ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE)) {
+                    Organization group = new Organization();
+                    group.setType(cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Organization.TYPE)));
+                    group.setLabel(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Organization.LABEL)));
+                    group.setCompany(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Organization.COMPANY)));
+                    group.setDepartment(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Organization.DEPARTMENT)));
+                    group.setJob_description(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Organization.JOB_DESCRIPTION)));
+                    group.setOffice_location(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Organization.OFFICE_LOCATION)));
+                    group.setPhonetic_name(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Organization.PHONETIC_NAME)));
+//                    group.setPhonetic_name_style(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Organization.PHONETIC_NAME_STYLE)));
+                    group.setSymbol(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Organization.SYMBOL)));
+                    group.setTitle(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Organization.TITLE)));
+
+                    contact.addData(group);
+                } else if (TextUtils.equals(mineType, ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE)) {
+//                    Group group = new Group();
+                    long gid = cursor.getLong(cursor.getColumnIndex(ContactsContract.CommonDataKinds.GroupMembership.GROUP_ROW_ID));
+//
+//                    Log.d(TAG, contact.getDisplayName() + "in group " + group.getGid());
+                    if (groupMap.containsKey(gid)) {
+                        contact.addGroup(gid);
+                    }
                 }
 
             } while (cursor.moveToNext());
@@ -272,31 +339,61 @@ public class ContactHelper {
         return;
     }
 
-
-    public List<Group> queryGroup() {
-        List<Group> groups = new ArrayList<Group>();
-
-
-        return groups;
-    }
-
-
-    private void queryData(Uri uri, long cid, IQueryDataListener listener) {
-        String selectionArgs[] = {"" + cid};
-        Cursor cursor = cr.query(uri, null, ContactsContract.Data.RAW_CONTACT_ID + "=?", selectionArgs, null);
-
-        if (cursor != null) {
-            try {
-//                Log.d("", "cursor.size=" + cursor.getCount());
-                if (cursor.moveToFirst()) {
-                    do {
-                        listener.onData(cursor);
-                    } while (cursor.moveToNext());
-                }
-            } finally {
-                cursor.close();
+    public Long getGroupIDByName(String name) {
+        if (groups == null) {
+            groups = queryGroups();
+        }
+        if (groups == null) {
+            return null;
+        }
+        for (Group group : groups) {
+            if (TextUtils.equals(group.getGroupName(), name)) {
+                return group.getGid();
             }
         }
+
+        return null;
     }
 
+    public void insert(Contact contact) {
+
+
+
+
+
+
+    }
+
+    public void update(Contact contact) {
+        Uri uri = ContactsContract.Contacts.CONTENT_URI;
+        ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
+        ContentProviderOperation op1 = ContentProviderOperation.newInsert(uri)
+                .withValue("account_name", null)
+                .build();
+        operations.add(op1);
+
+        uri = ContactsContract.Data.CONTENT_URI;
+        //添加姓名
+        ContentProviderOperation op2 = ContentProviderOperation.newInsert(uri)
+                .withValueBackReference("raw_contact_id", 0)
+                .withValue("mimetype", "vnd.android.cursor.item/name")
+                .withValue("data2", "李小龙")
+
+                .build();
+        operations.add(op2);
+        //添加电话号码
+        ContentProviderOperation op3 = ContentProviderOperation.newInsert(uri)
+                .withValueBackReference("raw_contact_id", 0)
+                .withValue("mimetype", "vnd.android.cursor.item/phone_v2")
+                .withValue("data1", "1234120155")
+                .withValue("data2", "2")
+                .build();
+        operations.add(op3);
+
+
+    }
+
+    public void moveContactToGroup(Contact contact, Long gid) {
+
+    }
 }

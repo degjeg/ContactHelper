@@ -17,4 +17,20 @@ public class Group {
     @DBPrimaryKey(name = "id", autoIncrement = true)
     long gid;
 
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public long getGid() {
+        return gid;
+    }
+
+    public void setGid(long gid) {
+        this.gid = gid;
+    }
 }

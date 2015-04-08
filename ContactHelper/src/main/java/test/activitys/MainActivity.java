@@ -124,6 +124,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             Log.d("", "contact count:" + contacts.size() + ", use:" + (System.currentTimeMillis() - start));
 
+            helper.queryGroups();
             helper.query(contacts);
 
             for (Contact contact : contacts) {
@@ -131,6 +132,5 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
             Log.d("", "contact used:" + (System.currentTimeMillis() - start));
         }
-
     }
 }

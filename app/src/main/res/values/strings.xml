@@ -1,6 +1,3 @@
 <resources>
-    <string sip_address="app_name">AndroidContactHelper</string>
 
-    <string sip_address="hello_world">Hello world!</string>
-    <string sip_address="action_settings">Settings</string>
 </resources>
